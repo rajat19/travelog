@@ -5,8 +5,15 @@ const withMDX = createMDX({
   extension: /\.mdx?$/,
 });
 
+const isGitHubPages = process.env.GITHUB_ACTIONS === 'true';
+const repoName = 'travelog';
+const basePath = isGitHubPages ? `/${repoName}` : '';
+
 const nextConfig: NextConfig = {
   output: 'export',
+  trailingSlash: true,
+  basePath,
+  assetPrefix: basePath || undefined,
   pageExtensions: ['ts', 'tsx', 'md', 'mdx'],
   images: {
     unoptimized: true,
