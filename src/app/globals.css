@@ -1,0 +1,190 @@
+@import 'tailwindcss';
+@plugin "daisyui" {
+  themes: golden-hour-light --default, golden-hour-dark;
+}
+
+@theme {
+  --font-heading: 'Playfair Display', serif;
+  --font-body: 'Inter', sans-serif;
+}
+
+/* ===== Golden Hour Light Theme ===== */
+@plugin "daisyui/theme" {
+  name: "golden-hour-light";
+  default: true;
+  prefersdark: false;
+  color-scheme: light;
+  --color-base-100: oklch(0.98 0.01 85);      /* #FEFCE8 Cream */
+  --color-base-200: oklch(0.96 0.015 60);     /* #FFF7ED Warm White */
+  --color-base-300: oklch(0.91 0.02 75);      /* #FEF3C7 Soft Amber */
+  --color-base-content: oklch(0.21 0.02 50);  /* #1C1917 Near Black */
+  --color-primary: oklch(0.75 0.18 75);       /* #F59E0B Amber */
+  --color-primary-content: oklch(0.15 0.02 50); /* Dark text on amber */
+  --color-secondary: oklch(0.65 0.13 175);    /* #0D9488 Teal */
+  --color-secondary-content: oklch(0.98 0 0); /* White text on teal */
+  --color-accent: oklch(0.72 0.19 55);        /* #F97316 Coral */
+  --color-accent-content: oklch(0.15 0.02 50);
+  --color-neutral: oklch(0.55 0.02 50);       /* #78716C Warm Gray */
+  --color-neutral-content: oklch(0.98 0 0);
+  --color-info: oklch(0.7 0.15 230);          /* Sky Blue */
+  --color-info-content: oklch(0.15 0.02 50);
+  --color-success: oklch(0.7 0.17 155);       /* #10B981 Emerald */
+  --color-success-content: oklch(0.15 0.02 50);
+  --color-warning: oklch(0.8 0.18 85);        /* Warm Yellow */
+  --color-warning-content: oklch(0.15 0.02 50);
+  --color-error: oklch(0.65 0.2 25);          /* Red */
+  --color-error-content: oklch(0.98 0 0);
+  --radius-selector: 0.5rem;
+  --radius-field: 0.5rem;
+  --radius-box: 0.75rem;
+}
+
+/* ===== Golden Hour Dark Theme ===== */
+@plugin "daisyui/theme" {
+  name: "golden-hour-dark";
+  default: false;
+  prefersdark: true;
+  color-scheme: dark;
+  --color-base-100: oklch(0.21 0.02 50);      /* #1C1917 Rich Charcoal */
+  --color-base-200: oklch(0.25 0.015 40);     /* #292524 Stone */
+  --color-base-300: oklch(0.30 0.015 40);     /* #3A3835 */
+  --color-base-content: oklch(0.93 0.01 85);  /* #FAF5E4 Cream text */
+  --color-primary: oklch(0.75 0.18 75);       /* #F59E0B Amber */
+  --color-primary-content: oklch(0.15 0.02 50);
+  --color-secondary: oklch(0.65 0.13 175);    /* #0D9488 Teal */
+  --color-secondary-content: oklch(0.98 0 0);
+  --color-accent: oklch(0.72 0.19 55);        /* #F97316 Coral */
+  --color-accent-content: oklch(0.15 0.02 50);
+  --color-neutral: oklch(0.55 0.02 50);       /* Warm Gray */
+  --color-neutral-content: oklch(0.93 0.01 85);
+  --color-info: oklch(0.7 0.15 230);
+  --color-info-content: oklch(0.15 0.02 50);
+  --color-success: oklch(0.7 0.17 155);       /* #10B981 Emerald */
+  --color-success-content: oklch(0.15 0.02 50);
+  --color-warning: oklch(0.8 0.18 85);
+  --color-warning-content: oklch(0.15 0.02 50);
+  --color-error: oklch(0.65 0.2 25);
+  --color-error-content: oklch(0.98 0 0);
+  --radius-selector: 0.5rem;
+  --radius-field: 0.5rem;
+  --radius-box: 0.75rem;
+}
+
+/* ===== Global Styles ===== */
+body {
+  font-family: var(--font-body);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+}
+
+/* Glassmorphism utility */
+.glass-card {
+  background: oklch(1 0 0 / 0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid oklch(1 0 0 / 0.15);
+}
+
+[data-theme="golden-hour-dark"] .glass-card {
+  background: oklch(0 0 0 / 0.25);
+  border-color: oklch(1 0 0 / 0.1);
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: oklch(0.9 0 0);
+}
+
+::-webkit-scrollbar-thumb {
+  background: oklch(0.6 0.05 75);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: oklch(0.5 0.05 75);
+}
+
+[data-theme="golden-hour-dark"] ::-webkit-scrollbar-track {
+  background: oklch(0.2 0 0);
+}
+
+[data-theme="golden-hour-dark"] ::-webkit-scrollbar-thumb {
+  background: oklch(0.4 0.05 75);
+}
+
+/* Globe container */
+.globe-container canvas {
+  cursor: grab;
+}
+
+.globe-container canvas:active {
+  cursor: grabbing;
+}
+
+/* MDX content styling */
+.mdx-content h1 {
+  font-family: var(--font-heading);
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.mdx-content h2 {
+  font-family: var(--font-heading);
+  font-size: 1.875rem;
+  font-weight: 600;
+  margin-top: 2.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.mdx-content h3 {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.mdx-content p {
+  margin-bottom: 1.25rem;
+  line-height: 1.8;
+}
+
+.mdx-content blockquote {
+  border-left: 4px solid oklch(0.75 0.18 75);
+  padding-left: 1.25rem;
+  margin: 1.5rem 0;
+  font-style: italic;
+  opacity: 0.9;
+}
+
+.mdx-content ul, .mdx-content ol  {
+  margin-bottom: 1.25rem;
+  padding-left: 1.5rem;
+}
+
+.mdx-content li {
+  margin-bottom: 0.5rem;
+  line-height: 1.7;
+}
+
+/* Image hover effect */
+.image-hover {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.image-hover:hover {
+  transform: scale(1.03);
+  box-shadow: 0 20px 40px oklch(0 0 0 / 0.15);
+}
