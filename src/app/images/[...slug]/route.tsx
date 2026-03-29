@@ -235,3 +235,30 @@ export async function GET(
         }
     );
 }
+
+export function generateStaticParams() {
+    const params: { slug: string[] }[] = [];
+
+    // Add a default sample image slug
+    params.push({ slug: ['sample.png'] });
+
+    for (const country of countries) {
+        if (country.coverImage.startsWith('/images/')) {
+            params.push({ slug: country.coverImage.replace(/^\/images\//, '').split('/') });
+        }
+
+        for (const city of country.cities) {
+            if (city.coverImage.startsWith('/images/')) {
+                params.push({ slug: city.coverImage.replace(/^\/images\//, '').split('/') });
+            }
+
+            for (const image of city.gallery) {
+                if (image.startsWith('/images/')) {
+                    params.push({ slug: image.replace(/^\/images\//, '').split('/') });
+                }
+            }
+        }
+    }
+
+    return params;
+}
