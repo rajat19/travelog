@@ -7,99 +7,101 @@ import { CityCard } from '@/components/CityCard';
 import { CountryContent } from '@/components/CountryContent';
 import { getCountryContent } from '@/lib/content';
 import type { Metadata } from 'next';
+import { withBasePath } from '@/lib/assets';
 
 interface CountryPageProps {
-    params: Promise<{ slug: string }>;
+  params: Promise<{ slug: string }>;
 }
 
 export async function generateStaticParams() {
-    return countries.map((country) => ({ slug: country.slug }));
+  return countries.map((country) => ({ slug: country.slug }));
 }
 
 export async function generateMetadata({ params }: CountryPageProps): Promise<Metadata> {
-    const { slug } = await params;
-    const country = getCountryBySlug(slug);
-    if (!country) return { title: 'Country Not Found' };
-    const countryContent = await getCountryContent(slug);
-    const description = countryContent?.frontmatter.description ?? country.description;
+  const { slug } = await params;
+  const country = getCountryBySlug(slug);
+  if (!country) return { title: 'Country Not Found' };
+  const countryContent = await getCountryContent(slug);
+  const description = countryContent?.frontmatter.description ?? country.description;
 
-    return {
-        title: `${country.name} — Travelog`,
-        description,
-    };
+  return {
+    title: `${country.name} — Travelog`,
+    description,
+  };
 }
 
 export default async function CountryPage({ params }: CountryPageProps) {
-    const { slug } = await params;
-    const country = getCountryBySlug(slug);
-    const countryContent = await getCountryContent(slug);
+  const { slug } = await params;
+  const country = getCountryBySlug(slug);
+  const countryContent = await getCountryContent(slug);
 
-    if (!country) notFound();
+  if (!country) notFound();
 
-    const description = countryContent?.frontmatter.description ?? country.description;
+  const description = countryContent?.frontmatter.description ?? country.description;
 
-    return (
-        <div>
-            {/* Hero Banner */}
-            <section className="relative h-[40vh] min-h-[300px]">
-                <Image
-                    src={country.coverImage}
-                    alt={country.name}
-                    fill
-                    className="object-cover"
-                    priority
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-base-100 via-black/30 to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-8">
-                    <div className="container mx-auto">
-                        <Link
-                            href="/"
-                            className="mb-4 inline-flex items-center gap-1 text-sm text-white/80 transition-colors hover:text-white"
-                        >
-                            <ArrowLeft className="h-4 w-4" />
-                            Back to Home
-                        </Link>
-                        <h1 className="font-heading text-4xl font-bold text-white md:text-5xl">
-                            {country.name}
-                        </h1>
-                        <div className="mt-2 flex items-center gap-2 text-white/80">
-                            <MapPin className="h-5 w-5" />
-                            <span>
-                                {country.cities.length}{' '}
-                                {country.cities.length === 1 ? 'city' : 'cities'} explored
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* Description */}
-            <section className="py-10">
-                <div className="container mx-auto px-4">
-                    <p className="mx-auto max-w-3xl text-center text-lg text-base-content/80">{description}</p>
-                    <div className="mx-auto mt-10 max-w-3xl">
-                        <CountryContent countrySlug={slug} />
-                    </div>
-                </div>
-            </section>
-
-            {/* Cities */}
-            <section className="border-t border-base-300 bg-base-200/30 py-12">
-                <div className="container mx-auto px-4">
-                    <h2 className="font-heading mb-8 text-center text-2xl font-bold md:text-3xl">
-                        Cities in{' '}
-                        <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                            {country.name}
-                        </span>
-                    </h2>
-
-                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                        {country.cities.map((city, idx) => (
-                            <CityCard key={city.slug} city={city} index={idx} />
-                        ))}
-                    </div>
-                </div>
-            </section>
+  return (
+    <div>
+      {/* Hero Banner */}
+      <section className="relative h-[40vh] min-h-[300px]">
+        <Image
+          src={withBasePath(country.coverImage)}
+          alt={country.name}
+          fill
+          className="object-cover"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-base-100 via-black/30 to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 p-8">
+          <div className="container mx-auto">
+            <Link
+              href="/"
+              className="mb-4 inline-flex items-center gap-1 text-sm text-white/80 transition-colors hover:text-white"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back to Home
+            </Link>
+            <h1 className="font-heading text-4xl font-bold text-white md:text-5xl">
+              {country.name}
+            </h1>
+            <div className="mt-2 flex items-center gap-2 text-white/80">
+              <MapPin className="h-5 w-5" />
+              <span>
+                {country.cities.length} {country.cities.length === 1 ? 'city' : 'cities'} explored
+              </span>
+            </div>
+          </div>
         </div>
-    );
+      </section>
+
+      {/* Description */}
+      <section className="py-10">
+        <div className="container mx-auto px-4">
+          <p className="mx-auto max-w-3xl text-center text-lg text-base-content/80">
+            {description}
+          </p>
+          <div className="mx-auto mt-10 max-w-3xl">
+            <CountryContent countrySlug={slug} />
+          </div>
+        </div>
+      </section>
+
+      {/* Cities */}
+      <section className="border-t border-base-300 bg-base-200/30 py-12">
+        <div className="container mx-auto px-4">
+          <h2 className="font-heading mb-8 text-center text-2xl font-bold md:text-3xl">
+            Cities in{' '}
+            <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              {country.name}
+            </span>
+          </h2>
+
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {country.cities.map((city, idx) => (
+              <CityCard key={city.slug} city={city} index={idx} />
+            ))}
+          </div>
+        </div>
+      </section>
+    </div>
+  );
 }

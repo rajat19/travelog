@@ -4,6 +4,7 @@ import './globals.css';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { ThemeProvider } from '@/components/ThemeProvider';
+import { withBasePath } from '@/lib/assets';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -24,9 +25,9 @@ export const metadata: Metadata = {
   keywords: ['travel', 'blog', 'photography', 'adventure', 'wanderlust'],
   authors: [{ name: 'Rajat' }],
   icons: {
-    icon: [{ url: '/travelog-icon.svg', type: 'image/svg+xml' }],
-    shortcut: [{ url: '/travelog-icon.svg', type: 'image/svg+xml' }],
-    apple: [{ url: '/apple-icon.svg', type: 'image/svg+xml' }],
+    icon: [{ url: withBasePath('/travelog-icon.svg'), type: 'image/svg+xml' }],
+    shortcut: [{ url: withBasePath('/travelog-icon.svg'), type: 'image/svg+xml' }],
+    apple: [{ url: withBasePath('/apple-icon.svg'), type: 'image/svg+xml' }],
   },
 };
 

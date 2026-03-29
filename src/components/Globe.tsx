@@ -1,8 +1,9 @@
 'use client';
 
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { countries, getVisitedCountryCodes } from '@/data/travel';
+import { withBasePath } from '@/lib/assets';
 
 type GlobeControls = {
   autoRotate: boolean;
@@ -60,10 +61,7 @@ export function GlobeVisualization() {
   const [dimensions, setDimensions] = useState({ width: 500, height: 500 });
   const [countryPolygons, setCountryPolygons] = useState<CountryFeature[]>([]);
   const router = useRouter();
-  const pathname = usePathname();
-
   const visitedCodes = getVisitedCountryCodes();
-  const basePath = pathname?.startsWith('/travelog') ? '/travelog' : '';
 
   const countryMarkers: GlobeMarker[] = countries.map((country) => ({
     lat: country.coordinates[0],
@@ -110,7 +108,7 @@ export function GlobeVisualization() {
   useEffect(() => {
     const controller = new AbortController();
 
-    fetch(`${basePath}/ne_110m_admin_0_countries.geojson`, {
+    fetch(withBasePath('/ne_110m_admin_0_countries.geojson'), {
       signal: controller.signal,
     })
       .then((response) => response.json())
@@ -124,7 +122,7 @@ export function GlobeVisualization() {
       });
 
     return () => controller.abort();
-  }, [basePath]);
+  }, []);
 
   useEffect(() => {
     const updateDimensions = () => {

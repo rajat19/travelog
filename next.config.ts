@@ -14,6 +14,9 @@ const nextConfig: NextConfig = {
   trailingSlash: true,
   basePath,
   assetPrefix: basePath || undefined,
+  env: {
+    NEXT_PUBLIC_BASE_PATH: basePath,
+  },
   pageExtensions: ['ts', 'tsx', 'md', 'mdx'],
   images: {
     unoptimized: true,
