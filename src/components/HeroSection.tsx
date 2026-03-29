@@ -9,7 +9,7 @@ const GlobeVisualization = dynamic(
     {
         ssr: false,
         loading: () => (
-            <div className="flex h-[500px] items-center justify-center">
+            <div className="flex h-[clamp(380px,72vw,500px)] items-center justify-center">
                 <span className="loading loading-spinner loading-lg text-primary" />
             </div>
         ),
@@ -71,7 +71,7 @@ export function HeroSection() {
 
                     {/* Globe */}
                     <motion.div
-                        className="flex-1"
+                        className="flex w-full min-w-0 flex-1 justify-center"
                         // initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.8, delay: 0.2 }}

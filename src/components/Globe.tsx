@@ -1,8 +1,14 @@
 'use client';
 
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
-import { countries, getVisitedCountryCodes } from '@/data/travel';
+import Image from 'next/image';
+import { ExternalLink } from 'lucide-react';
+import {
+  countries,
+  getCountryBySlug,
+  getCityBySlug,
+  getVisitedCountryCodes,
+} from '@/data/travel';
 import { withBasePath } from '@/lib/assets';
 
 type GlobeControls = {
@@ -43,15 +49,6 @@ type GlobeMarker = {
   kind: 'country' | 'city';
 };
 
-type RingMarker = {
-  lat: number;
-  lng: number;
-  color: string;
-  maxR: number;
-  propagationSpeed: number;
-  repeatPeriod: number;
-};
-
 export function GlobeVisualization() {
   const globeRef = useRef<GlobeHandle | undefined>(undefined);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -60,19 +57,9 @@ export function GlobeVisualization() {
   > | null>(null);
   const [dimensions, setDimensions] = useState({ width: 500, height: 500 });
   const [countryPolygons, setCountryPolygons] = useState<CountryFeature[]>([]);
-  const router = useRouter();
+  const [selectedCity, setSelectedCity] = useState<GlobeMarker | null>(null);
+  const [selectedCountry, setSelectedCountry] = useState<GlobeMarker | null>(null);
   const visitedCodes = getVisitedCountryCodes();
-
-  const countryMarkers: GlobeMarker[] = countries.map((country) => ({
-    lat: country.coordinates[0],
-    lng: country.coordinates[1],
-    name: country.name,
-    country: country.name,
-    countrySlug: country.slug,
-    size: 0.5,
-    color: '#67E8F9',
-    kind: 'country',
-  }));
 
   const cityMarkers: GlobeMarker[] = countries.flatMap((country) =>
     country.cities.map((city) => ({
@@ -87,17 +74,6 @@ export function GlobeVisualization() {
       kind: 'city',
     }))
   );
-
-  const allMarkers = [...countryMarkers, ...cityMarkers];
-
-  const cityRings: RingMarker[] = cityMarkers.map((city) => ({
-    lat: city.lat,
-    lng: city.lng,
-    color: 'rgba(245, 158, 11, 0.55)',
-    maxR: 3.8,
-    propagationSpeed: 2.2,
-    repeatPeriod: 900,
-  }));
 
   useEffect(() => {
     import('react-globe.gl').then((mod) => {
@@ -131,9 +107,12 @@ export function GlobeVisualization() {
       }
 
       const rect = containerRef.current.getBoundingClientRect();
+      const isMobile = rect.width < 768;
       setDimensions({
         width: rect.width,
-        height: Math.min(rect.width, 500),
+        height: isMobile
+          ? Math.min(Math.max(rect.width * 1.1, 380), 460)
+          : Math.min(rect.width, 500),
       });
     };
 
@@ -148,15 +127,20 @@ export function GlobeVisualization() {
     }
 
     const controls = globeRef.current.controls?.();
+    const isMobile = dimensions.width < 768;
+
     if (controls) {
       controls.autoRotate = true;
       controls.autoRotateSpeed = 0.24;
       controls.enableZoom = true;
-      controls.minDistance = 180;
+      controls.minDistance = isMobile ? 150 : 180;
       controls.maxDistance = 420;
     }
 
-    globeRef.current.pointOfView({ lat: 20, lng: 110, altitude: 1.75 }, 0);
+    globeRef.current.pointOfView(
+      { lat: 20, lng: 110, altitude: isMobile ? 1.42 : 1.9 },
+      0
+    );
   }, [GlobeComponent, dimensions.width, dimensions.height]);
 
   const handleMarkerClick = useCallback(
@@ -164,15 +148,17 @@ export function GlobeVisualization() {
       const selected = marker as GlobeMarker;
 
       if (selected.kind === 'country') {
-        router.push(`/country/${selected.countrySlug}`);
+        setSelectedCity(null);
+        setSelectedCountry(selected);
         return;
       }
 
       if (selected.citySlug) {
-        router.push(`/city/${selected.countrySlug}/${selected.citySlug}`);
+        setSelectedCountry(null);
+        setSelectedCity(selected);
       }
     },
-    [router]
+    []
   );
 
   const handlePolygonClick = useCallback(
@@ -182,10 +168,20 @@ export function GlobeVisualization() {
       const match = countries.find((country) => country.code === isoCode);
 
       if (match) {
-        router.push(`/country/${match.slug}`);
+        setSelectedCity(null);
+        setSelectedCountry({
+          lat: match.coordinates[0],
+          lng: match.coordinates[1],
+          name: match.name,
+          country: match.name,
+          countrySlug: match.slug,
+          size: 0.5,
+          color: '#67E8F9',
+          kind: 'country',
+        });
       }
     },
-    [router]
+    []
   );
 
   const getCountryCapColor = useCallback(
@@ -203,45 +199,65 @@ export function GlobeVisualization() {
   );
 
   const getCountryAltitude = useCallback(
-    (feature: object) => {
-      const polygon = feature as CountryFeature;
-      const isoCode = polygon.properties?.ISO_A2;
-      return isoCode && visitedCodes.includes(isoCode) ? 0.055 : 0.008;
-    },
-    [visitedCodes]
+    () => 0.001,
+    []
   );
 
-  const getMarkerLabel = useCallback((item: object) => {
-    const marker = item as GlobeMarker;
-    const accent = marker.kind === 'city' ? 'rgba(245, 158, 11, 0.55)' : 'rgba(103, 232, 249, 0.5)';
-    const eyebrow = marker.kind === 'city' ? 'Visited city' : 'Visited country';
+  const renderCityPin = useCallback(
+    (marker: object) => {
+      const city = marker as GlobeMarker;
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.title = `${city.name}, ${city.country}`;
+      button.setAttribute('aria-label', `${city.name}, ${city.country}`);
+      button.style.width = '18px';
+      button.style.height = '18px';
+      button.style.border = '2px solid rgba(255, 247, 237, 0.95)';
+      button.style.borderRadius = '50% 50% 50% 0';
+      button.style.background = 'linear-gradient(135deg, #f59e0b, #f97316)';
+      button.style.boxShadow = '0 6px 18px rgba(249, 115, 22, 0.45)';
+      button.style.transform = 'translate(-50%, -50%) rotate(-45deg)';
+      button.style.cursor = 'pointer';
+      button.style.pointerEvents = 'auto';
+      button.style.padding = '0';
+      button.style.zIndex = '1';
 
-    return `
-      <div style="
-        background: rgba(2, 6, 23, 0.9);
-        padding: 10px 12px;
-        border-radius: 10px;
-        color: white;
-        font-family: Inter, sans-serif;
-        font-size: 13px;
-        border: 1px solid ${accent};
-        box-shadow: 0 12px 30px rgba(15, 23, 42, 0.35);
-      ">
-        <div style="font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.68;">
-          ${eyebrow}
-        </div>
-        <strong>${marker.name}</strong><br/>
-        <span style="opacity: 0.78; font-size: 11px;">${marker.country}</span>
-      </div>
-    `;
-  }, []);
+      const centerDot = document.createElement('span');
+      centerDot.style.position = 'absolute';
+      centerDot.style.top = '50%';
+      centerDot.style.left = '50%';
+      centerDot.style.width = '5px';
+      centerDot.style.height = '5px';
+      centerDot.style.borderRadius = '999px';
+      centerDot.style.background = 'rgba(255, 255, 255, 0.95)';
+      centerDot.style.transform = 'translate(-50%, -50%) rotate(45deg)';
+
+      button.style.position = 'relative';
+      button.appendChild(centerDot);
+      button.onclick = () => handleMarkerClick(city);
+
+      return button;
+    },
+    [handleMarkerClick]
+  );
+
+  const selectedCityData = selectedCity?.citySlug
+    ? getCityBySlug(selectedCity.countrySlug, selectedCity.citySlug)
+    : undefined;
+  const selectedCountryData = selectedCountry
+    ? getCountryBySlug(selectedCountry.countrySlug)
+    : undefined;
+  const visitedCountryPolygons = countryPolygons.filter((feature) => {
+    const isoCode = feature.properties?.ISO_A2;
+    return !!isoCode && visitedCodes.includes(isoCode);
+  });
 
   if (!GlobeComponent) {
     return (
       <div
         ref={containerRef}
-        className="globe-container flex items-center justify-center"
-        style={{ height: '500px' }}
+        className="globe-container flex w-full items-center justify-center"
+        style={{ height: 'clamp(380px, 72vw, 500px)' }}
       >
         <div className="flex flex-col items-center gap-3">
           <span className="loading loading-spinner loading-lg text-primary" />
@@ -252,22 +268,108 @@ export function GlobeVisualization() {
   }
 
   return (
-    <div ref={containerRef} className="globe-container relative">
-      <div className="pointer-events-none absolute left-4 top-4 z-10 rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-3 text-xs text-white/80 shadow-2xl backdrop-blur">
-        <div className="mb-2 font-semibold text-white">Explore the map</div>
-        <div className="flex items-center gap-2">
-          <span className="h-2.5 w-2.5 rounded-full bg-cyan-300" />
-          <span>Country anchor</span>
+    <div
+      ref={containerRef}
+      className="globe-container relative mx-auto w-full max-w-[500px]"
+      style={{ height: 'clamp(380px, 72vw, 500px)' }}
+    >
+
+      {selectedCity ? (
+        <div className="absolute bottom-3 left-1/2 z-[50] w-[220px] -translate-x-1/2 rounded-2xl border border-white/10 bg-slate-950/90 p-3 text-white shadow-2xl backdrop-blur md:bottom-4 md:left-4 md:w-[220px] md:translate-x-0">
+          {selectedCityData ? (
+            <div className="relative mb-3 h-24 overflow-hidden rounded-xl border border-white/10">
+              <Image
+                src={withBasePath(selectedCityData.coverImage)}
+                alt={selectedCityData.name}
+                fill
+                className="object-cover"
+                sizes="220px"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-slate-950/15 to-transparent" />
+            </div>
+          ) : null}
+
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <div className="text-xs uppercase tracking-[0.16em] text-white/55">Selected city</div>
+              <div className="mt-1 font-heading text-xl font-semibold">{selectedCity.name}</div>
+              <div className="text-sm text-white/70">{selectedCity.country}</div>
+            </div>
+            <div className="flex items-center gap-1">
+              <button
+                type="button"
+                className="btn btn-primary btn-circle btn-sm"
+                onClick={() => {
+                  if (!selectedCity.citySlug) {
+                    return;
+                  }
+
+                  window.open(
+                    `/city/${selectedCity.countrySlug}/${selectedCity.citySlug}`,
+                    '_blank',
+                    'noopener,noreferrer'
+                  );
+                }}
+                aria-label={`Open ${selectedCity.name} blog in a new tab`}
+              >
+                <ExternalLink className="h-4 w-4" />
+              </button>
+              <button
+                type="button"
+                className="btn btn-ghost btn-circle btn-xs text-white/70 hover:text-white"
+                onClick={() => setSelectedCity(null)}
+                aria-label="Close city details"
+              >
+                ✕
+              </button>
+            </div>
+          </div>
         </div>
-        <div className="mt-1 flex items-center gap-2">
-          <span className="h-3.5 w-3.5 rounded-full border-2 border-amber-200 bg-amber-500" />
-          <span>Visited city</span>
+      ) : null}
+
+      {selectedCountry ? (
+        <div className="absolute bottom-3 left-1/2 z-[50] w-[220px] -translate-x-1/2 rounded-2xl border border-white/10 bg-slate-950/90 p-3 text-white shadow-2xl backdrop-blur md:bottom-4 md:left-auto md:right-4 md:w-[220px] md:translate-x-0">
+          {selectedCountryData ? (
+            <div className="relative mb-3 h-24 overflow-hidden rounded-xl border border-white/10">
+              <Image
+                src={withBasePath(selectedCountryData.coverImage)}
+                alt={selectedCountryData.name}
+                fill
+                className="object-cover"
+                sizes="220px"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-slate-950/15 to-transparent" />
+            </div>
+          ) : null}
+
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <div className="text-xs uppercase tracking-[0.16em] text-white/55">Selected country</div>
+              <div className="mt-1 font-heading text-xl font-semibold">{selectedCountry.name}</div>
+            </div>
+            <div className="flex items-center gap-1">
+              <button
+                type="button"
+                className="btn btn-primary btn-circle btn-sm"
+                onClick={() => {
+                  window.open(`/country/${selectedCountry.countrySlug}`, '_blank', 'noopener,noreferrer');
+                }}
+                aria-label={`Open ${selectedCountry.name} blog in a new tab`}
+              >
+                <ExternalLink className="h-4 w-4" />
+              </button>
+              <button
+                type="button"
+                className="btn btn-ghost btn-circle btn-xs text-white/70 hover:text-white"
+                onClick={() => setSelectedCountry(null)}
+                aria-label="Close country details"
+              >
+                ✕
+              </button>
+            </div>
+          </div>
         </div>
-        <div className="mt-1 flex items-center gap-2">
-          <span className="h-2.5 w-6 rounded-full bg-orange-500/80" />
-          <span>Highlighted country</span>
-        </div>
-      </div>
+      ) : null}
 
       <GlobeComponent
         ref={globeRef}
@@ -276,16 +378,9 @@ export function GlobeVisualization() {
         backgroundColor="rgba(0,0,0,0)"
         globeImageUrl="//unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
         polygonsData={countryPolygons}
-        polygonAltitude={getCountryAltitude}
-        polygonCapColor={getCountryCapColor}
-        polygonSideColor={(feature: object) => {
-          const polygon = feature as CountryFeature;
-          const isoCode = polygon.properties?.ISO_A2;
-
-          return isoCode && visitedCodes.includes(isoCode)
-            ? 'rgba(249, 115, 22, 0.18)'
-            : 'rgba(148, 163, 184, 0.04)';
-        }}
+        polygonAltitude={0.0001}
+        polygonCapColor={() => 'rgba(0, 0, 0, 0)'}
+        polygonSideColor={() => 'rgba(0, 0, 0, 0)'}
         polygonStrokeColor={(feature: object) => {
           const polygon = feature as CountryFeature;
           const isoCode = polygon.properties?.ISO_A2;
@@ -296,31 +391,20 @@ export function GlobeVisualization() {
         }}
         polygonsTransitionDuration={320}
         onPolygonClick={handlePolygonClick}
+        hexPolygonsData={visitedCountryPolygons}
+        hexPolygonColor={() => 'rgba(249, 115, 22, 0.72)'}
+        hexPolygonAltitude={0.0012}
+        hexPolygonResolution={4}
+        hexPolygonMargin={0.12}
+        hexPolygonCurvatureResolution={2}
+        onHexPolygonClick={handlePolygonClick}
         atmosphereColor="#F97316"
         atmosphereAltitude={0.16}
-        pointsData={allMarkers}
-        pointLat="lat"
-        pointLng="lng"
-        pointAltitude={(marker: object) => {
-          const item = marker as GlobeMarker;
-          return item.kind === 'city' ? 0.1 : 0.035;
-        }}
-        pointRadius={(marker: object) => {
-          const item = marker as GlobeMarker;
-          return item.kind === 'city' ? item.size : item.size * 0.75;
-        }}
-        pointColor="color"
-        pointResolution={18}
-        pointLabel={getMarkerLabel}
-        onPointClick={handleMarkerClick}
-        ringsData={cityRings}
-        ringLat="lat"
-        ringLng="lng"
-        ringColor="color"
-        ringMaxRadius="maxR"
-        ringPropagationSpeed="propagationSpeed"
-        ringRepeatPeriod="repeatPeriod"
-        ringResolution={48}
+        htmlElementsData={cityMarkers}
+        htmlLat="lat"
+        htmlLng="lng"
+        htmlAltitude={0.03}
+        htmlElement={renderCityPin}
         enablePointerInteraction={true}
       />
     </div>
