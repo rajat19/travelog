@@ -2,10 +2,23 @@ import { HeroSection } from '@/components/HeroSection';
 import { TravelStats } from '@/components/TravelStats';
 import { CountryCard } from '@/components/CountryCard';
 import { CityCard } from '@/components/CityCard';
+import { HomepageCityFilter } from '@/components/HomepageCityFilter';
 import { countries, getAllCities } from '@/data/travel';
+import { getCityContent } from '@/lib/content';
 
-export default function HomePage() {
+export default async function HomePage() {
   const allCities = getAllCities();
+  
+  // Pre-fetch all frontmatter for the client-side filter
+  const citiesWithMeta = await Promise.all(
+    allCities.map(async (city) => {
+      const content = await getCityContent(city.countrySlug, city.slug);
+      return {
+        ...city,
+        frontmatter: content?.frontmatter || null,
+      };
+    })
+  );
 
   return (
     <>
@@ -42,23 +55,7 @@ export default function HomePage() {
       {/* All Cities Section */}
       <section className="border-t border-base-300 bg-base-200/30 py-16">
         <div className="container mx-auto px-4">
-          <div className="mb-10 text-center">
-            <h2 className="font-heading mb-3 text-3xl font-bold md:text-4xl">
-              All{' '}
-              <span className="bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent">
-                Destinations
-              </span>
-            </h2>
-            <p className="mx-auto max-w-2xl text-base-content/60">
-              Every city tells a different story. Browse through all the places I&apos;ve visited.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {allCities.map((city, idx) => (
-              <CityCard key={`${city.countrySlug}-${city.slug}`} city={city} index={idx} />
-            ))}
-          </div>
+          <HomepageCityFilter cities={citiesWithMeta} />
         </div>
       </section>
     </>

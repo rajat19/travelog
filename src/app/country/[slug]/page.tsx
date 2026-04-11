@@ -92,46 +92,75 @@ export default async function CountryPage({ params }: CountryPageProps) {
         </section>
       )}
 
-      {/* Description */}
+      {/* Description & Navigation (Desktop Split) */}
       <section className="py-10">
         <div className="container mx-auto px-4">
-          <p className="mx-auto max-w-3xl text-center text-lg text-base-content/80">
-            {description}
-          </p>
-          <div className="mx-auto mt-10 max-w-3xl">
-            <CountryContent countrySlug={slug} />
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-4 lg:gap-12">
+            {/* Sidebar Navigation for Cities (Desktop Only) */}
+            <aside className="hidden lg:block lg:col-span-1">
+              <div className="sticky top-24 rounded-2xl border border-base-300 bg-base-200/30 p-6 shadow-sm">
+                <h3 className="font-heading mb-4 border-b border-base-300 pb-2 text-lg font-bold">
+                  Destinations
+                </h3>
+                <ul className="space-y-3">
+                  {country.cities.map((city) => (
+                    <li key={city.slug}>
+                      <Link
+                        href={`/city/${country.slug}/${city.slug}`}
+                        className="group flex items-center gap-3 text-sm text-base-content/70 transition-colors hover:text-primary"
+                      >
+                        <div className="h-1.5 w-1.5 rounded-full bg-base-300 transition-colors group-hover:bg-primary" />
+                        {city.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </aside>
+
+            {/* Main Country MDX Content */}
+            <div className="lg:col-span-3">
+              <p className="mb-10 max-w-3xl text-lg text-base-content/80 lg:text-left text-center">
+                {description}
+              </p>
+              <div className="mx-auto max-w-3xl lg:mx-0">
+                <CountryContent countrySlug={slug} />
+              </div>
+
+              {/* Tags (Moved inside the main grid to align properly) */}
+              {fm?.tags && fm.tags.length > 0 && (
+                <div className="mt-12 flex max-w-3xl flex-wrap items-center gap-2 border-t border-base-300 pt-6">
+                  <span className="text-xs font-medium uppercase tracking-wider text-base-content/40">
+                    Tags
+                  </span>
+                  {fm.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="rounded-full bg-base-200 px-3 py-1 text-xs text-base-content/70"
+                    >
+                      #{tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Tags */}
-      {fm?.tags && fm.tags.length > 0 && (
-        <section className="border-t border-base-300 py-6">
-          <div className="container mx-auto px-4">
-            <div className="mx-auto flex max-w-3xl flex-wrap items-center gap-2">
-              <span className="text-xs font-medium uppercase tracking-wider text-base-content/40">
-                Tags
-              </span>
-              {fm.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="rounded-full bg-base-200 px-3 py-1 text-xs text-base-content/70"
-                >
-                  #{tag}
-                </span>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Cities */}
+      {/* Mobile/Footer Cities Cards */}
       <section className="border-t border-base-300 bg-base-200/30 py-12">
         <div className="container mx-auto px-4">
-          <h2 className="font-heading mb-8 text-center text-2xl font-bold md:text-3xl">
+          <h2 className="font-heading mb-8 text-center text-2xl font-bold md:text-3xl lg:hidden">
             Cities in{' '}
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
               {country.name}
+            </span>
+          </h2>
+          <h2 className="font-heading hidden mb-8 text-center text-2xl font-bold md:text-3xl lg:block">
+            Keep{' '}
+            <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              Exploring
             </span>
           </h2>
 
