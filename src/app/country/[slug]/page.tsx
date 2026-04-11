@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { countries, getCountryBySlug } from '@/data/travel';
 import { CityCard } from '@/components/CityCard';
 import { CountryContent } from '@/components/CountryContent';
+import { CountryInfoBar } from '@/components/CountryInfoBar';
+import { RatingBadge } from '@/components/RatingBadge';
 import { getCountryContent } from '@/lib/content';
 import type { Metadata } from 'next';
 import { withBasePath } from '@/lib/assets';
@@ -38,6 +40,7 @@ export default async function CountryPage({ params }: CountryPageProps) {
   if (!country) notFound();
 
   const description = countryContent?.frontmatter.description ?? country.description;
+  const fm = countryContent?.frontmatter;
 
   return (
     <div>
@@ -69,9 +72,25 @@ export default async function CountryPage({ params }: CountryPageProps) {
                 {country.cities.length} {country.cities.length === 1 ? 'city' : 'cities'} explored
               </span>
             </div>
+            {/* Rating & Vibe badges */}
+            {fm && (
+              <RatingBadge
+                rating={fm.rating}
+                vibe={fm.vibe}
+              />
+            )}
           </div>
         </div>
       </section>
+
+      {/* Country Info Bar */}
+      {fm && (
+        <section className="border-b border-base-300 bg-base-200/30">
+          <div className="container mx-auto px-4">
+            <CountryInfoBar frontmatter={fm} cityCount={country.cities.length} />
+          </div>
+        </section>
+      )}
 
       {/* Description */}
       <section className="py-10">
@@ -84,6 +103,27 @@ export default async function CountryPage({ params }: CountryPageProps) {
           </div>
         </div>
       </section>
+
+      {/* Tags */}
+      {fm?.tags && fm.tags.length > 0 && (
+        <section className="border-t border-base-300 py-6">
+          <div className="container mx-auto px-4">
+            <div className="mx-auto flex max-w-3xl flex-wrap items-center gap-2">
+              <span className="text-xs font-medium uppercase tracking-wider text-base-content/40">
+                Tags
+              </span>
+              {fm.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="rounded-full bg-base-200 px-3 py-1 text-xs text-base-content/70"
+                >
+                  #{tag}
+                </span>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Cities */}
       <section className="border-t border-base-300 bg-base-200/30 py-12">

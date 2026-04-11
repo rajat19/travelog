@@ -164,25 +164,46 @@ src/content/countries/
 └── ...
 ```
 
-**Each MDX file** must have YAML frontmatter:
+**Each MDX file** uses an enriched set of YAML frontmatter for the `TripInfoBar` and `RatingBadge` UI components:
 
 ```mdx
 ---
 title: Bangkok
 description: A city of contrasts where gilded temples stand beside neon-lit skyscrapers.
+idealDuration: "3-5 days"
+lastVisited: "February 2025"
+rating: 4.8
+vibe: "Chaotic & Electric"
+budgetLevel: "budget-friendly"
+tags:
+  - temples
+  - street-food
 ---
 
 ## The City of Angels
 
 Bangkok, or Krung Thep Maha Nakhon, ...
+
+<Tip title="Transit Secret">
+Use the BTS Skytrain instead of taxis!
+</Tip>
 ```
 
 MDX is loaded at build time via `next-mdx-remote/rsc` (in `src/lib/content.tsx`),
 **not** via `@next/mdx` page routes. The compile pipeline uses:
 
-- `remark-gfm` (tables, strikethrough, etc.)
-- `rehype-slug` (heading IDs)
-- `rehype-autolink-headings` (clickable heading anchors)
+1. `remark-gfm` (tables, strikethrough, etc.)
+2. `rehype-slug` (heading IDs)
+3. `rehype-autolink-headings` (clickable heading anchors)
+
+**Custom MDX Components** are injected so they can be securely used directly inside Markdown:
+- `<Tip title="...">`
+- `<Highlight title="...">`
+- `<Itinerary>`
+- `<FoodGuide>`
+- `<GettingThere>`
+- `<Accommodation title="...">`
+- `<Budget>`
 
 MDX content is rendered inside the `.mdx-content` CSS class, which provides
 typography styling (see `globals.css`).
@@ -218,7 +239,7 @@ src/content/countries/<country-slug>/index.mdx
 src/content/countries/<country-slug>/cities/<city-slug>.mdx
 ```
 
-Include frontmatter with `title` and `description`.
+Include the full travelog frontmatter (e.g., `title`, `description`, `lastVisited`, `idealDuration`, `rating`, `vibe`, `budgetLevel`, `tags`) and utilize the custom MDX components (like `<Tip>` or `<FoodGuide>`) to structure the content.
 
 ### Step 3 — Images
 
@@ -388,5 +409,5 @@ When making changes, verify:
 - [ ] New routes have `generateStaticParams` if they use dynamic segments
 - [ ] Image paths exist and use correct extensions
 - [ ] `withBasePath()` is used for all asset references
-- [ ] MDX content has valid frontmatter (`title`, `description`)
+- [ ] MDX files include extended frontmatter (`title`, `description`, `lastVisited`, `idealDuration`, etc.)
 - [ ] Code follows existing patterns (component naming, file structure)
