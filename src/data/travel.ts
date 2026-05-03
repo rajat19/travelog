@@ -524,6 +524,33 @@ export const countries: Country[] = [
             },
         ],
     },
+    {
+        slug: 'kazakhstan',
+        name: 'Kazakhstan',
+        code: 'KZ',
+        coordinates: [48.0196, 66.9237],
+        coverImage: '/images/kazakhstan/cover.jpg',
+        description:
+            'The vast heart of Central Asia — where snow-capped peaks, endless steppe, Silk Road heritage, and a bold modern identity converge beneath enormous skies.',
+        cities: [
+            {
+                slug: 'almaty',
+                name: 'Almaty',
+                country: 'Kazakhstan',
+                countrySlug: 'kazakhstan',
+                coordinates: [43.222, 76.8512],
+                coverImage: '/images/kazakhstan/almaty/cover.jpg',
+                description:
+                    'Kazakhstan\'s cultural capital, a leafy, mountain-backed metropolis where Soviet-era grandeur, buzzing bazaars, and alpine adventures collide.',
+                visitDate: '2025-04',
+                gallery: [
+                    '/images/kazakhstan/almaty/zenkov-cathedral.jpg',
+                    '/images/kazakhstan/almaty/green-bazaar.jpg',
+                    '/images/kazakhstan/almaty/medeu-rink.jpg',
+                ],
+            },
+        ],
+    },
 ];
 /** Get all cities across all countries */
 export function getAllCities(): City[] {
