@@ -63,8 +63,11 @@ export default async function CountryPage({ params }: CountryPageProps) {
               <ArrowLeft className="h-4 w-4" />
               Back to Home
             </Link>
-            <h1 className="font-heading text-4xl font-bold text-white md:text-5xl">
+            <h1 className="font-heading text-4xl font-bold text-white md:text-5xl flex items-baseline gap-4 flex-wrap">
               {country.name}
+              {country.nativeName && country.nativeName !== country.name && (
+                <span className="text-2xl md:text-4xl text-white/60 font-normal">{country.nativeName}</span>
+              )}
             </h1>
             <div className="mt-2 flex items-center gap-2 text-white/80">
               <MapPin className="h-5 w-5" />

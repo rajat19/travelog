@@ -13,6 +13,7 @@ export interface City {
 export interface Country {
     slug: string;
     name: string;
+    nativeName?: string;
     code: string; // ISO 3166-1 alpha-2
     coordinates: [number, number]; // [lat, lng]
     coverImage: string;
@@ -24,6 +25,7 @@ export const countries: Country[] = [
     {
         slug: 'thailand',
         name: 'Thailand',
+        nativeName: 'ประเทศไทย',
         code: 'TH',
         coordinates: [15.87, 100.9925],
         coverImage: '/images/thailand/cover.png',
@@ -116,6 +118,7 @@ export const countries: Country[] = [
     {
         slug: 'singapore',
         name: 'Singapore',
+        nativeName: '新加坡',
         code: 'SG',
         coordinates: [1.3521, 103.8198],
         coverImage: '/images/singapore/singapore/cover.jpg',
@@ -143,6 +146,7 @@ export const countries: Country[] = [
     {
         slug: 'malaysia',
         name: 'Malaysia',
+        nativeName: 'مليسيا',
         code: 'MY',
         coordinates: [4.2105, 101.9758],
         coverImage: '/images/malaysia/kuala-lumpur/cover.jpg',
@@ -186,6 +190,7 @@ export const countries: Country[] = [
     {
         slug: 'indonesia',
         name: 'Indonesia',
+        nativeName: 'Indonesia',
         code: 'ID',
         coordinates: [-0.7893, 113.9213],
         coverImage: '/images/indonesia/bali/cover.jpg',
@@ -213,6 +218,7 @@ export const countries: Country[] = [
     {
         slug: 'taiwan',
         name: 'Taiwan',
+        nativeName: '台灣',
         code: 'TW',
         coordinates: [23.6978, 120.9605],
         coverImage: 'https://upload.wikimedia.org/wikipedia/commons/e/ea/Taipei_Skyline_2022.06.29.jpg',
@@ -240,6 +246,7 @@ export const countries: Country[] = [
     {
         slug: 'vietnam',
         name: 'Vietnam',
+        nativeName: 'Việt Nam',
         code: 'VN',
         coordinates: [14.0583, 108.2772],
         coverImage: '/images/vietnam/cover.png',
@@ -283,6 +290,7 @@ export const countries: Country[] = [
     {
         slug: 'japan',
         name: 'Japan',
+        nativeName: '日本',
         code: 'JP',
         coordinates: [36.2048, 138.2529],
         coverImage: '/images/japan/cover.png',
@@ -385,6 +393,7 @@ export const countries: Country[] = [
     {
         slug: 'india',
         name: 'India',
+        nativeName: 'भारत',
         code: 'IN',
         coordinates: [20.5937, 78.9629],
         coverImage: '/images/india/cover.jpg',
@@ -527,6 +536,7 @@ export const countries: Country[] = [
     {
         slug: 'kazakhstan',
         name: 'Kazakhstan',
+        nativeName: 'Қазақстан',
         code: 'KZ',
         coordinates: [48.0196, 66.9237],
         coverImage: '/images/kazakhstan/cover.jpg',

@@ -32,9 +32,9 @@ export default async function HomePage() {
       <section id="countries" className="py-16">
         <div className="container mx-auto px-4">
           <div className="mb-10 text-center">
-            <h2 className="font-heading mb-3 text-3xl font-bold md:text-4xl">
-              Countries I&apos;ve{' '}
-              <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+            <h2 className="font-heading mb-3 text-3xl font-bold md:text-4xl flex items-center justify-center flex-wrap gap-x-2">
+              Countries I&apos;ve
+              <span className="font-accent bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent text-5xl md:text-6xl font-normal pb-2 pt-1 pr-4 inline-block -mb-2">
                 Explored
               </span>
             </h2>
@@ -53,7 +53,7 @@ export default async function HomePage() {
       </section>
 
       {/* All Cities Section */}
-      <section className="border-t border-base-300 bg-base-200/30 py-16">
+      <section id="destinations" className="border-t border-base-300 bg-base-200/30 py-16">
         <div className="container mx-auto px-4">
           <HomepageCityFilter cities={citiesWithMeta} />
         </div>

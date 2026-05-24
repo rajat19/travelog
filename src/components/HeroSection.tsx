@@ -40,11 +40,12 @@ export function HeroSection() {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.6, delay: 0.15 }}
                         >
-                            Exploring the{' '}
-                            <span className="bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
-                                World
+                            <span className="font-accent bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent text-6xl md:text-7xl lg:text-8xl font-normal leading-normal inline-block mx-2 pb-4 pt-2 pr-4 -mb-4">
+                                Exploring the World
                             </span>
-                            , One City at a Time
+                            <span className="font-accent bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent text-6xl md:text-7xl lg:text-8xl font-normal leading-normal inline-block mx-2 pb-4 pt-2 pr-4 -mb-4">
+                                One City at a Time
+                            </span>
                         </motion.h1>
 
                         <motion.p

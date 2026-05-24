@@ -15,16 +15,17 @@ interface HomepageCityFilterProps {
 }
 
 export function HomepageCityFilter({ cities }: HomepageCityFilterProps) {
-  const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const [selectedBudget, setSelectedBudget] = useState<string | null>(null);
 
-  // Extract all unique tags
-  const allTags = useMemo(() => {
-    const tags = new Set<string>();
+  // Extract all unique countries
+  const allCountries = useMemo(() => {
+    const countries = new Set<string>();
     cities.forEach((city) => {
-      city.frontmatter?.tags?.forEach((tag) => tags.add(tag));
+      countries.add(city.country);
     });
-    return Array.from(tags).sort();
+    return Array.from(countries).sort();
   }, [cities]);
 
   // Extract all unique budgets
@@ -49,20 +50,21 @@ export function HomepageCityFilter({ cities }: HomepageCityFilterProps) {
 
   const filteredCities = useMemo(() => {
     return cities.filter((city) => {
-      const matchTag = selectedTag ? city.frontmatter?.tags?.includes(selectedTag) : true;
+      const matchSearch = city.name.toLowerCase().includes(searchQuery.toLowerCase()) || city.country.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchCountry = selectedCountry ? city.country === selectedCountry : true;
       const matchBudget = selectedBudget
         ? city.frontmatter?.budgetLevel === selectedBudget
         : true;
-      return matchTag && matchBudget;
+      return matchSearch && matchCountry && matchBudget;
     });
-  }, [cities, selectedTag, selectedBudget]);
+  }, [cities, searchQuery, selectedCountry, selectedBudget]);
 
   return (
     <>
       <div className="mb-10 text-center">
-        <h2 className="font-heading mb-3 text-3xl font-bold md:text-4xl">
-          All{' '}
-          <span className="bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent">
+        <h2 className="font-heading mb-3 text-3xl font-bold md:text-4xl flex items-center justify-center flex-wrap gap-x-3">
+          All
+          <span className="font-accent bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent text-5xl md:text-6xl font-normal pb-2 pt-1 pr-4 inline-block -mb-2">
             Destinations
           </span>
         </h2>
@@ -72,51 +74,75 @@ export function HomepageCityFilter({ cities }: HomepageCityFilterProps) {
       </div>
 
       {/* Filter Controls */}
-      <div className="mb-10 flex flex-col items-center gap-6">
-        {/* Tags */}
-        <div className="flex flex-wrap justify-center gap-2">
-          <button
-            onClick={() => setSelectedTag(null)}
-            className={`btn btn-sm cursor-pointer rounded-full ${
-              selectedTag === null ? 'btn-primary' : 'btn-ghost bg-base-300'
-            }`}
-          >
-            All Vibes
-          </button>
-          {allTags.map((tag) => (
+      <div className="mb-12 flex flex-col items-center gap-6 overflow-visible px-4 md:px-0">
+        
+        {/* Search */}
+        <div className="w-full max-w-md">
+          <input 
+            type="text" 
+            placeholder="Search by city or country name..." 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="input input-bordered w-full rounded-full bg-base-100 shadow-sm"
+          />
+        </div>
+
+        {/* Countries */}
+        <div className="relative w-full -mx-4 md:mx-0">
+          <div className="no-scrollbar flex w-full snap-x snap-mandatory gap-2 overflow-x-auto py-2 px-4 md:justify-center md:px-0">
             <button
-              key={tag}
-              onClick={() => setSelectedTag(tag)}
-              className={`btn btn-sm cursor-pointer rounded-full ${
-                selectedTag === tag ? 'btn-primary' : 'btn-ghost bg-base-300'
+              onClick={() => setSelectedCountry(null)}
+              className={`btn btn-sm snap-start shrink-0 cursor-pointer rounded-full border-none px-5 transition-all ${
+                selectedCountry === null
+                  ? 'btn-primary shadow-md'
+                  : 'bg-base-200/60 text-base-content/70 hover:bg-base-300 hover:text-base-content'
               }`}
             >
-              #{tag}
+              All Countries
             </button>
-          ))}
+            {allCountries.map((country) => (
+              <button
+                key={country}
+                onClick={() => setSelectedCountry((prev) => (prev === country ? null : country))}
+                className={`btn btn-sm snap-start shrink-0 cursor-pointer rounded-full border-none px-5 transition-all ${
+                  selectedCountry === country
+                    ? 'btn-primary shadow-md'
+                    : 'bg-base-200/60 text-base-content/70 hover:bg-base-300 hover:text-base-content'
+                }`}
+              >
+                {country}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Budgets */}
-        <div className="flex flex-wrap justify-center gap-2">
-          <button
-            onClick={() => setSelectedBudget(null)}
-            className={`btn btn-sm cursor-pointer rounded-full ${
-              selectedBudget === null ? 'btn-secondary' : 'btn-ghost bg-base-300'
-            }`}
-          >
-            Any Budget
-          </button>
-          {allBudgets.map((budget) => (
+        <div className="relative mt-2 -mx-4 md:mx-0">
+          <div className="no-scrollbar flex w-full snap-x snap-mandatory gap-2 overflow-x-auto py-2 px-4 md:justify-center md:px-0">
             <button
-              key={budget}
-              onClick={() => setSelectedBudget(budget)}
-              className={`btn btn-sm cursor-pointer rounded-full ${
-                selectedBudget === budget ? 'btn-secondary' : 'btn-ghost bg-base-300'
+              onClick={() => setSelectedBudget(null)}
+              className={`btn btn-sm snap-start shrink-0 cursor-pointer rounded-full border-none px-5 transition-all ${
+                selectedBudget === null
+                  ? 'btn-secondary shadow-md'
+                  : 'bg-base-200/60 text-base-content/70 hover:bg-base-300 hover:text-base-content'
               }`}
             >
-              {formatBudgetLabel(budget)}
+              Any Budget
             </button>
-          ))}
+            {allBudgets.map((budget) => (
+              <button
+                key={budget}
+                onClick={() => setSelectedBudget((prev) => (prev === budget ? null : budget))}
+                className={`btn btn-sm snap-start shrink-0 cursor-pointer rounded-full border-none px-5 transition-all ${
+                  selectedBudget === budget
+                    ? 'btn-secondary shadow-md'
+                    : 'bg-base-200/60 text-base-content/70 hover:bg-base-300 hover:text-base-content'
+                }`}
+              >
+                {formatBudgetLabel(budget)}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -142,7 +168,7 @@ export function HomepageCityFilter({ cities }: HomepageCityFilterProps) {
             <p>No destinations match your selected filters.</p>
             <button 
               className="btn btn-link mt-2 text-primary"
-              onClick={() => { setSelectedTag(null); setSelectedBudget(null); }}
+              onClick={() => { setSearchQuery(''); setSelectedCountry(null); setSelectedBudget(null); }}
             >
               Clear filters
             </button>

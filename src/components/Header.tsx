@@ -15,6 +15,7 @@ export function Header() {
   const navLinks = [
     { href: '/', label: 'Home' },
     { href: '/#countries', label: 'Countries' },
+    { href: '/#destinations', label: 'Destinations' },
   ];
 
   return (
@@ -23,7 +24,7 @@ export function Header() {
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 text-xl font-bold">
           <BrandMark className="h-8 w-8 shrink-0" />
-          <span className="font-heading bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+          <span className="font-accent bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent text-3xl font-bold">
             Travelog
           </span>
         </Link>

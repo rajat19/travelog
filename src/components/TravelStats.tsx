@@ -49,7 +49,7 @@ export function TravelStats() {
         },
         {
             icon: Camera,
-            label: 'Photos',
+            label: 'Moments',
             value: stats.photos,
             color: 'text-accent',
             bgColor: 'bg-accent/10',
@@ -76,7 +76,9 @@ export function TravelStats() {
                                 <p className="font-heading text-3xl font-bold">
                                     <AnimatedCounter target={stat.value} />
                                 </p>
-                                <p className="text-sm text-base-content/60">{stat.label} Explored</p>
+                                <p className="text-sm text-base-content/60">
+                                    {stat.label} {stat.label === 'Moments' ? 'Captured' : 'Explored'}
+                                </p>
                             </div>
                         </motion.div>
                     ))}
