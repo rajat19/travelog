@@ -8,7 +8,7 @@ import { getCityContent } from '@/lib/content';
 
 export default async function HomePage() {
   const allCities = getAllCities();
-  
+
   // Pre-fetch all frontmatter for the client-side filter
   const citiesWithMeta = await Promise.all(
     allCities.map(async (city) => {
@@ -44,7 +44,7 @@ export default async function HomePage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
             {countries.map((country, idx) => (
               <CountryCard key={country.slug} country={country} index={idx} />
             ))}

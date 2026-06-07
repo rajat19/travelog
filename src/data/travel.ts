@@ -285,6 +285,22 @@ export const countries: Country[] = [
                     '/images/vietnam/ho-chi-minh/street-scene.png',
                 ],
             },
+            {
+                slug: 'hanoi',
+                name: 'Hanoi',
+                country: 'Vietnam',
+                countrySlug: 'vietnam',
+                coordinates: [21.0285, 105.8542],
+                coverImage: '/images/vietnam/hanoi/cover.jpg',
+                description:
+                    'Vietnam\'s ancient capital — a thousand-year-old city of tree-lined boulevards, misty lakes, crumbling French villas, and the best street food in Southeast Asia.',
+                visitDate: '2024-11',
+                gallery: [
+                    '/images/vietnam/hanoi/temple-of-literature.jpg',
+                    '/images/vietnam/hanoi/old-quarter.jpg',
+                    '/images/vietnam/hanoi/ho-chi-minh-mausoleum.jpg',
+                ],
+            },
         ],
     },
     {

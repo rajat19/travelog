@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@import 'leaflet/dist/leaflet.css';
 @plugin "daisyui" {
   themes: golden-hour-light --default, golden-hour-dark;
 }
@@ -219,4 +220,30 @@ html {
 .image-hover:hover {
   transform: scale(1.03);
   box-shadow: 0 20px 40px oklch(0 0 0 / 0.15);
+}
+
+/* ===== Leaflet Mini-Map ===== */
+
+.minimap-container .leaflet-container {
+  border-radius: 0;
+  font-family: var(--font-body);
+}
+
+.minimap-container .leaflet-popup-content-wrapper {
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 30px oklch(0 0 0 / 0.15);
+}
+
+.minimap-container .leaflet-popup-tip {
+  box-shadow: none;
+}
+
+/* ===== Tag chips ===== */
+.tag-chip {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.tag-chip:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px oklch(0 0 0 / 0.1);
 }

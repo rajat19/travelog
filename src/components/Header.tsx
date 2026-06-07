@@ -62,11 +62,11 @@ export function Header() {
       <AnimatePresence>
         {searchOpen && (
           <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
+            initial={{ height: 0, opacity: 0, overflow: 'hidden' }}
+            animate={{ height: 'auto', opacity: 1, overflow: 'visible' }}
+            exit={{ height: 0, opacity: 0, overflow: 'hidden' }}
             transition={{ duration: 0.2 }}
-            className="overflow-hidden border-t border-base-300"
+            className="border-t border-base-300 relative z-50"
           >
             <div className="container mx-auto px-4 py-3">
               <SearchBar onClose={() => setSearchOpen(false)} />
