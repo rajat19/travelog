@@ -103,8 +103,11 @@ export default async function CityPage({ params }: CityPageProps) {
           <ArrowLeft className="h-4 w-4" />
           Back to {country.name}
         </Link>
-        <h1 className="font-heading text-4xl font-bold text-white md:text-5xl lg:text-6xl">
+        <h1 className="font-heading text-4xl font-bold text-white md:text-5xl lg:text-6xl flex flex-wrap items-baseline gap-3">
           {city.name}
+          {city.nativeName && city.nativeName !== city.name && (
+            <span className="text-2xl md:text-3xl lg:text-4xl font-normal opacity-80">{city.nativeName}</span>
+          )}
         </h1>
         <div className="mt-3 flex flex-wrap items-center gap-4 text-white/80">
           <div className="flex items-center gap-1">

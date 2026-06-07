@@ -39,7 +39,22 @@ export function Header() {
         </nav>
 
         {/* Right side: Search + Theme + Mobile Menu */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 relative">
+          {/* Desktop Search Inline */}
+          <AnimatePresence>
+            {searchOpen && (
+              <motion.div
+                initial={{ opacity: 0, x: 10 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 10 }}
+                transition={{ duration: 0.2 }}
+                className="hidden md:block absolute right-full mr-2 top-1/2 -translate-y-1/2 w-[400px]"
+              >
+                <SearchBar onClose={() => setSearchOpen(false)} />
+              </motion.div>
+            )}
+          </AnimatePresence>
+
           <button
             onClick={() => setSearchOpen(!searchOpen)}
             className="btn btn-ghost btn-circle btn-sm"
@@ -58,7 +73,7 @@ export function Header() {
         </div>
       </div>
 
-      {/* Search Overlay */}
+      {/* Mobile Search Overlay */}
       <AnimatePresence>
         {searchOpen && (
           <motion.div
@@ -66,7 +81,7 @@ export function Header() {
             animate={{ height: 'auto', opacity: 1, overflow: 'visible' }}
             exit={{ height: 0, opacity: 0, overflow: 'hidden' }}
             transition={{ duration: 0.2 }}
-            className="border-t border-base-300 relative z-50"
+            className="md:hidden border-t border-base-300 relative z-50"
           >
             <div className="container mx-auto px-4 py-3">
               <SearchBar onClose={() => setSearchOpen(false)} />

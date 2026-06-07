@@ -1,7 +1,6 @@
 import { HeroSection } from '@/components/HeroSection';
 import { TravelStats } from '@/components/TravelStats';
 import { CountryCard } from '@/components/CountryCard';
-import { CityCard } from '@/components/CityCard';
 import { HomepageCityFilter } from '@/components/HomepageCityFilter';
 import { countries, getAllCities } from '@/data/travel';
 import { getCityContent } from '@/lib/content';

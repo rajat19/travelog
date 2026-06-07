@@ -39,7 +39,12 @@ export function CityCard({ city, index = 0 }: CityCardProps) {
           </div>
         </figure>
         <div className="card-body">
-          <h3 className="card-title font-heading text-lg">{city.name}</h3>
+          <h3 className="card-title font-heading text-lg">
+            {city.name}
+            {city.nativeName && city.nativeName !== city.name && (
+              <span className="ml-1 text-sm font-normal opacity-80">{city.nativeName}</span>
+            )}
+          </h3>
           <p className="line-clamp-2 text-sm text-base-content/70">{city.description}</p>
           <div className="mt-1 flex items-center gap-1 text-xs text-base-content/50">
             <Calendar className="h-3 w-3" />
