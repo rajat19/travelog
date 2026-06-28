@@ -255,6 +255,52 @@ export const countries: Country[] = [
         ],
     },
     {
+        slug: 'australia',
+        name: 'Australia',
+        code: 'AU',
+        coordinates: [-25.2744, 133.7751],
+        coverImage:
+            'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Sydney_Australia._%2821339175489%29.jpg/1280px-Sydney_Australia._%2821339175489%29.jpg',
+        description:
+            'A continent-sized country of coastal cities, surf culture, vast landscapes, and an easy outdoor rhythm shaped by sun, coffee, and long horizons.',
+        cities: [
+            {
+                slug: 'sydney',
+                name: 'Sydney',
+                country: 'Australia',
+                countrySlug: 'australia',
+                coordinates: [-33.8688, 151.2093],
+                coverImage:
+                    'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Sydney_Australia._%2821339175489%29.jpg/1280px-Sydney_Australia._%2821339175489%29.jpg',
+                description:
+                    'Australia’s harbor icon, where ferries, surf beaches, sandstone walks, and a glittering skyline make the city feel constantly outdoors.',
+                visitDate: '2026-05',
+                gallery: [
+                    'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Sydney_Australia._%2821339175489%29.jpg/1280px-Sydney_Australia._%2821339175489%29.jpg',
+                    'https://upload.wikimedia.org/wikipedia/commons/d/d1/Sydney_Harbour_Bridge_from_Circular_Quay.jpg',
+                    'https://upload.wikimedia.org/wikipedia/commons/7/79/Bondi_from_above.jpg',
+                ],
+            },
+            {
+                slug: 'melbourne',
+                name: 'Melbourne',
+                country: 'Australia',
+                countrySlug: 'australia',
+                coordinates: [-37.8136, 144.9631],
+                coverImage:
+                    'https://upload.wikimedia.org/wikipedia/commons/7/74/Melbourne_skyline_sor.jpg',
+                description:
+                    'A creative southern capital of laneways, coffee rituals, trams, galleries, sport, and moody weather that rewards slow wandering.',
+                visitDate: '2026-05',
+                gallery: [
+                    'https://upload.wikimedia.org/wikipedia/commons/7/7e/Flinders_Street_Station_Melbourne_March_2021.jpg',
+                    'https://upload.wikimedia.org/wikipedia/commons/b/b0/Melbourne_Skyline_and_Princes_Bridge_-_Dec_2008_%28cropped%29.jpg',
+                    'https://upload.wikimedia.org/wikipedia/commons/6/62/Hosier_Lane_from_Flinders_Street_Melbourne.jpg',
+                ],
+            },
+        ],
+    },
+    {
         slug: 'vietnam',
         name: 'Vietnam',
         nativeName: 'Việt Nam',
